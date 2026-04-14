@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def graficar_convergencia(aproximaciones, raiz, titulo):
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(aproximaciones)), aproximaciones, 'bo-', label='Aproximaciones')
+    plt.axhline(y=raiz, color='r', linestyle='--', label=f'Raíz ≈ {raiz:.6f}')
+    plt.xlabel('Iteración')
+    plt.ylabel('Valor aproximado')
+    plt.title(f'Convergencia - Falsa Posición\n{titulo}')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def falsa_posicion(f, a, b, tol=1e-6, max_iter=100):
+    if f(a) * f(b) >= 0:
+        print("Error: No hay cambio de signo.")
+        return None, 0, []
+    
+    iteraciones = 0
+    aproximaciones = []
+    while abs(b - a) > tol and iteraciones < max_iter:
+        xr = (a * f(b) - b * f(a)) / (f(b) - f(a))
+        aproximaciones.append(xr)
+        iteraciones += 1
+        if abs(f(xr)) < tol:
+            break
+        if f(a) * f(xr) < 0:
+            b = xr
+        else:
+            a = xr
+    raiz = aproximaciones[-1]
+    return raiz, iteraciones, aproximaciones
+
+print("=== MÉTODO DE LA FALSA POSICIÓN ===\n")
+
+def fa(x): return x**3 + 4*x**2 - 10
+raiz, it, aprox = falsa_posicion(fa, 1.0, 2.0)
+print(f"a) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x³ + 4x² - 10 = 0")
+
+def fb(x): return np.exp(3*x) - 4
+raiz, it, aprox = falsa_posicion(fb, 0.0, 1.0)
+print(f"b) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "e^{3x} - 4 = 0")
+
+def fc(x): return -0.4*x**2 + 2.3*x + 2.2
+raiz, it, aprox = falsa_posicion(fc, -2.0, 4.0)
+print(f"c) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "-0.4x² + 2.3x + 2.2 = 0")
+
+def fd(x): return x**4 + 3*x**2 - 2
+raiz, it, aprox = falsa_posicion(fd, 0.0, 1.5)
+print(f"d) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x⁴ + 3x² - 2 = 0")
