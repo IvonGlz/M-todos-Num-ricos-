@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def graficar_convergencia(aproximaciones, raiz, titulo):
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(aproximaciones)), aproximaciones, 'bo-', label='Aproximaciones')
+    plt.axhline(y=raiz, color='r', linestyle='--', label=f'Raíz ≈ {raiz:.6f}')
+    plt.xlabel('Iteración')
+    plt.ylabel('Valor aproximado')
+    plt.title(f'Convergencia - Secante\n{titulo}')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def secante(f, x0, x1, tol=1e-6, max_iter=100):
+    iteraciones = 0
+    xa, xb = x0, x1
+    aproximaciones = [xa, xb]
+    while iteraciones < max_iter:
+        if abs(f(xb) - f(xa)) < 1e-12:
+            print("Error: Denominador cercano a cero.")
+            break
+        xc = xb - f(xb) * (xb - xa) / (f(xb) - f(xa))
+        aproximaciones.append(xc)
+        iteraciones += 1
+        if abs(xc - xb) < tol:
+            break
+        xa, xb = xb, xc
+    raiz = aproximaciones[-1]
+    return raiz, iteraciones, aproximaciones
+
+print("=== MÉTODO DE LA SECANTE ===\n")
+
+def fa(x): return x**3 + 4*x**2 - 10
+raiz, it, aprox = secante(fa, 1.0, 2.0)
+print(f"a) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x³ + 4x² - 10 = 0")
+
+def fb(x): return np.exp(3*x) - 4
+raiz, it, aprox = secante(fb, 0.0, 1.0)
+print(f"b) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "e^{3x} - 4 = 0")
+
+def fc(x): return -0.4*x**2 + 2.3*x + 2.2
+raiz, it, aprox = secante(fc, -1.0, 3.0)
+print(f"c) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "-0.4x² + 2.3x + 2.2 = 0")
+
+def fd(x): return x**4 + 3*x**2 - 2
+raiz, it, aprox = secante(fd, 0.0, 1.5)
+print(f"d) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x⁴ + 3x² - 2 = 0")
