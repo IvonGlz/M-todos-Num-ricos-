@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def graficar_convergencia(aproximaciones, raiz, titulo):
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(aproximaciones)), aproximaciones, 'bo-', label='Aproximaciones')
+    plt.axhline(y=raiz, color='r', linestyle='--', label=f'Raíz ≈ {raiz:.6f}')
+    plt.xlabel('Iteración')
+    plt.ylabel('Valor aproximado')
+    plt.title(f'Convergencia - Newton-Raphson\n{titulo}')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def newton_raphson(f, df, x0, tol=1e-6, max_iter=50):
+    x = x0
+    iteraciones = 0
+    aproximaciones = [x]
+    while iteraciones < max_iter:
+        if abs(df(x)) < 1e-12:
+            print("Error: Derivada cero.")
+            break
+        x_nuevo = x - f(x) / df(x)
+        aproximaciones.append(x_nuevo)
+        iteraciones += 1
+        if abs(x_nuevo - x) < tol:
+            break
+        x = x_nuevo
+    raiz = aproximaciones[-1]
+    return raiz, iteraciones, aproximaciones
+
+print("=== MÉTODO DE NEWTON-RAPHSON ===\n")
+
+# a)
+def fa(x): return x**3 + 4*x**2 - 10
+def dfa(x): return 3*x**2 + 8*x
+raiz, it, aprox = newton_raphson(fa, dfa, 1.5)
+print(f"a) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x³ + 4x² - 10 = 0")
+
+# b)
+def fb(x): return np.exp(3*x) - 4
+def dfb(x): return 3 * np.exp(3*x)
+raiz, it, aprox = newton_raphson(fb, dfb, 0.5)
+print(f"b) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "e^{3x} - 4 = 0")
+
+# c)
+def fc(x): return -0.4*x**2 + 2.3*x + 2.2
+def dfc(x): return -0.8*x + 2.3
+raiz, it, aprox = newton_raphson(fc, dfc, 0.0)
+print(f"c) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "-0.4x² + 2.3x + 2.2 = 0")
+
+# d)
+def fd(x): return x**4 + 3*x**2 - 2
+def dfd(x): return 4*x**3 + 6*x
+raiz, it, aprox = newton_raphson(fd, dfd, 1.0)
+print(f"d) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x⁴ + 3x² - 2 = 0")
