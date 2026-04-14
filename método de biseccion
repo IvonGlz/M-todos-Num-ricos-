@@ -1,0 +1,64 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Configuración para que las gráficas se muestren correctamente
+%matplotlib inline
+plt.style.use('default')
+
+def graficar_convergencia(aproximaciones, raiz, titulo):
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(aproximaciones)), aproximaciones, 'bo-', label='Aproximaciones')
+    plt.axhline(y=raiz, color='r', linestyle='--', label=f'Raíz ≈ {raiz:.6f}')
+    plt.xlabel('Iteración')
+    plt.ylabel('Valor aproximado')
+    plt.title(f'Convergencia - Bisección\n{titulo}')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def biseccion(f, a, b, tol=1e-6, max_iter=100):
+    if f(a) * f(b) >= 0:
+        print("Error: No hay cambio de signo.")
+        return None, 0, []
+    
+    iteraciones = 0
+    aproximaciones = []
+    while (b - a) > tol and iteraciones < max_iter:
+        c = (a + b) / 2
+        aproximaciones.append(c)
+        iteraciones += 1
+        if abs(f(c)) < tol:
+            break
+        if f(a) * f(c) < 0:
+            b = c
+        else:
+            a = c
+    raiz = (a + b) / 2
+    aproximaciones.append(raiz)
+    return raiz, iteraciones, aproximaciones
+
+print("=== MÉTODO DE LA BISECCIÓN ===\n")
+
+# Función a)
+def fa(x): return x**3 + 4*x**2 - 10
+raiz, it, aprox = biseccion(fa, 1.0, 2.0)
+print(f"a) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x³ + 4x² - 10 = 0")
+
+# Función b)
+def fb(x): return np.exp(3*x) - 4
+raiz, it, aprox = biseccion(fb, 0.0, 1.0)
+print(f"b) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "e^{3x} - 4 = 0")
+
+# Función c)
+def fc(x): return -0.4*x**2 + 2.3*x + 2.2
+raiz, it, aprox = biseccion(fc, -2.0, 4.0)
+print(f"c) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "-0.4x² + 2.3x + 2.2 = 0")
+
+# Función d)
+def fd(x): return x**4 + 3*x**2 - 2
+raiz, it, aprox = biseccion(fd, 0.0, 1.5)
+print(f"d) Raíz: {raiz:.8f} | Iteraciones: {it}")
+graficar_convergencia(aprox, raiz, "x⁴ + 3x² - 2 = 0")
